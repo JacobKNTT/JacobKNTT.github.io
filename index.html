@@ -39,7 +39,7 @@
     <h1>Search the Delivery Centre</h1>
 
     <!-- Search Bar -->
-    <input type="text" id="searchInput" placeholder="Search the Delivery Centre" />
+    <input type="text" id="searchInput" placeholder="What are you looking for?" />
     <button onclick="searchDocuments()">Search</button>
 
     <!-- Container for Search Results -->
@@ -53,7 +53,7 @@
                 return;
             }
 
-            var searchApiUrl = "https://your-sharepoint-site-url/_api/search/query?querytext='" + searchTerm + "'&trimduplicates=false&rowlimit=10&selectproperties='Title,Path'";
+            var searchApiUrl = "https://everisgroup.sharepoint.com/sites/DevOpsCapabilityPractice/Delivery Centre/Forms/AllItems.aspx/_api/search/query?querytext='" + searchTerm + "'&trimduplicates=false&rowlimit=10&selectproperties='Title,Path'";
 
             fetch(searchApiUrl, {
                 method: 'GET',
