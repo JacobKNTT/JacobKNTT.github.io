@@ -1,1 +1,91 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search the Delivery Centre</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #0078d7;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search the Delivery Centre</h1>
+
+    <!-- Search Bar -->
+    <input type="text" id="searchInput" placeholder="Search the Delivery Centre" />
+    <button onclick="searchDocuments()">Search</button>
+
+    <!-- Container for Search Results -->
+    <div id="searchResults"></div>
+
+    <script type="text/javascript">
+        function searchDocuments() {
+            var searchTerm = document.getElementById("searchInput").value;
+            if (searchTerm === "") {
+                alert("Please enter a search term");
+                return;
+            }
+
+            var searchApiUrl = "https://your-sharepoint-site-url/_api/search/query?querytext='" + searchTerm + "'&trimduplicates=false&rowlimit=10&selectproperties='Title,Path'";
+
+            fetch(searchApiUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json;odata=verbose',
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => displayResults(data.d.query.PrimaryQueryResult.RelevantResults.Table.Rows.results))
+            .catch(error => console.error('Error fetching search results: ', error));
+        }
+
+        function displayResults(results) {
+            var searchResultsDiv = document.getElementById("searchResults");
+            searchResultsDiv.innerHTML = '';
+
+            if (results.length === 0) {
+                searchResultsDiv.innerHTML = '<p>No results found</p>';
+                return;
+            }
+
+            var resultList = '<ul>';
+            results.forEach(result => {
+                var title = result.Cells.results.find(cell => cell.Key === 'Title').Value;
+                var path = result.Cells.results.find(cell => cell.Key === 'Path').Value;
+                resultList += `<li><a href="${path}" target="_blank">${title}</a></li>`;
+            });
+            resultList += '</ul>';
+
+            searchResultsDiv.innerHTML = resultList;
+        }
+    </script>
+</body>
+</html>
